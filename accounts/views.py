@@ -1,3 +1,4 @@
+from accounts.models import FormContato
 import accounts
 from django.shortcuts import render, redirect
 from django.contrib import messages, auth
@@ -72,4 +73,16 @@ def register(request):
 
 @login_required(redirect_field_name='login')
 def dashboard(request):
-    return render(request, 'accounts/dashboard.html')
+    if request.method != 'POST':
+        form = FormContato
+        return render(request, 'accounts/dashboard.html', { 'form':form})
+    form = FormContato(request.POST,request.FILES)
+    if not form.is_valid:
+        messages.error(request, 'Erro ao cadastrar contato, tente novamente')
+        form = FormContato(request.POST)
+        return render(request, 'accounts/dashboard.html', { 'form':form})
+        
+    form.save()
+    return redirect('dashboard')
+
+
