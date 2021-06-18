@@ -1,12 +1,10 @@
-{% extends "base.html" %}
-
-{% block conteudo %}
+{% extends "base.html" %} {% block titulo %} {{contato.nome }} Contato |{% endblock %} {% block conteudo %}
 
 <h1 class="mt-5">{{contato.nome}}</h1>
 
 {% if contato.foto %}
 <p>
-    <img src="{{contato.foto.url}}" alt="" style="max-width: 250px; height: auto;">
+    <img src="{{contato.foto.url}}" alt="" style="max-width: 250px; height: auto" />
 </p>
 {% endif %}
 <dl>
@@ -28,7 +26,5 @@
     <dt>Descrição</dt>
     <dd>{{contato.descricao}}</dd>
 </dl>
-
-
 
 {% endblock %}

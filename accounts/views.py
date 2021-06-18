@@ -1,17 +1,34 @@
 import accounts
 from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.contrib import messages, auth
 from django.core.validators import validate_email
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 
 def login(request):
-    return render(request, 'accounts/login.html')
+    if request.method != 'POST':
+        return render(request, 'accounts/login.html')
+
+    nome = request.POST.get('nome')
+    senha = request.POST.get('senha')
+
+    if not nome or not senha:
+        messages.error(request, 'Nenhum campo poder estar vazio')
+        return render(request, 'accounts/login.html')
+    
+    user = auth.authenticate(request, username=nome, password=senha)
+    if not user:
+        messages.error(request, 'Usuário ou senha inválidos')
+        return render(request, 'accounts/login.html')
+    else:
+        auth.login(request, user)
+        return redirect('dashboard')
 
 
 def logout(request):
-    return render(request, 'accounts/logout.html')
-
+    auth.logout(request)
+    return redirect('login')
 
 def register(request):
     if request.method != 'POST':
@@ -53,6 +70,6 @@ def register(request):
     user.save()
     return redirect('login')
 
-
+@login_required(redirect_field_name='login')
 def dashboard(request):
     return render(request, 'accounts/dashboard.html')

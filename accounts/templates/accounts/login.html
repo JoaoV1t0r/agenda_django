@@ -1,5 +1,45 @@
 {% extends 'base.html' %}
 
+
+{% block titulo %}Login |{% endblock %}
+
 {% block conteudo %}
-Login
+
+{% if not user.is_authenticated %}
+
+<h1>Login</h1>
+<form class="needs-validation mb-3" action="{% url 'login' %}" method="post">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-danger" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div class="row">
+        <div class="col-md">
+            {% csrf_token %}
+            <div class="form-floating mb-2">
+                <label for="Nome">Nome:</label>
+                <input name="nome" type="name" value="{{request.POST.nome}}" class="form-control" id="Nome"
+                    placeholder="Nome">
+            </div>
+
+            <div class="form-floating mb-2">
+                <label for="Senha">Senha:</label>
+                <input name="senha" type="password" value="{{request.POST.senha}}" class="form-control" id="Senha"
+                    placeholder="Senha">
+            </div>
+
+            <div class="d-grid gap-2 mt-2 mb-3">
+                <input type="submit" value="Login" class="btn btn-dark">
+            </div>
+        </div>
+</form>
+{% else %}
+<p class="my-5">
+    Você fez login com {{user}}
+    <a href="{% url 'logout' %}">Clique aqui</a> para sair
+</p>
+{% endif %}
 {% endblock %}
